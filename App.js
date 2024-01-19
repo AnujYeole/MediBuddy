@@ -10,7 +10,7 @@ import ClientPage from './Screens/doc';
 import AppointmentBooking from './Screens/docDet';
 import DateTimePickerComponent from './Screens/DateTimePicker';
 import AppBooker from './Screens/AppBooker';
-
+import BookingScreen from './Screens/BookingScreen';
 const Stack = createStackNavigator();
 
 const App = () => {
@@ -20,7 +20,9 @@ const App = () => {
         <Stack.Screen name="Welcome" component={Welcome} />
         <Stack.Screen name="Signup" component={SignUp} />
         <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="admin" component={AdminPage} />
         <Stack.Screen name="DocInfo" component={ClientPage} />
+        <Stack.Screen name="BookingScreen" component={BookingScreen} />
         <Stack.Screen name="DateTime" component={DateTimePickerComponent} />
         <Stack.Screen name="AppBooker" component={AppBooker} />
         <Stack.Screen name="AppointmentBooking" component={AppointmentBooking} />

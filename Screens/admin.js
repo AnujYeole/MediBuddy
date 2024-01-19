@@ -32,7 +32,7 @@ const AdminPage = () => {
 
   const handleAddDoctor = async () => {
     try {
-      const response = await axios.post('http://192.168.11.10:3000/addDoctor', {
+      const response = await axios.post('http://192.168.212.10:3000/addDoctor', {
         name,
         occupation,
         profilePicture,

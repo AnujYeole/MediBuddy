@@ -1,7 +1,7 @@
 const express = require('express');
 const mysql = require('mysql2');
 const bodyParser = require('body-parser');
-
+const moment = require('moment');
 const app = express();
 const port = 3000;
 
@@ -94,12 +94,12 @@ app.get('/doctors', (req, res) => {
   });
 });
 
-app.get('/doctors/:id', (req, res) => {
+app.get('/doctors/:id/:name', (req, res) => {
   console.log('Request console', req);
   const doctorId = req.params.id;
-
-  const query = `SELECT * FROM doctors WHERE id = ?`;
-  db.query(query, [doctorId], (err, results) => {
+  const doctorName = req.params.name;
+  const query = 'SELECT * FROM doctors WHERE id = ? AND name = ?';
+  db.query(query, [doctorId, doctorName], (err, results) => {
     if (err) {
       console.error('Error fetching doctor details:', err);
       res.status(500).json({ error: 'Internal Server Error' });
@@ -114,21 +114,26 @@ app.get('/doctors/:id', (req, res) => {
   });
 });
 
-function toMysqlFormat(date) {
-  return date.toISOString().slice(0, 19).replace('T', ' ');
-}
-
 app.post('/book-appointment', (req, res) => {
-  const { date } = req.body;
+  const { doctorId, doctorName, date } = req.body;
+  // Validate input data
+  if (!doctorId || !doctorName || !date) {
+    return res.status(400).json({ error: 'Invalid input data' });
+  }
 
-  const formattedDate = toMysqlFormat(new Date(date));
+  // Convert date to MySQL format
+  const formattedDate = moment(date).format('YYYY-MM-DD HH:mm:ss');
+  // Insert appointment data into the database
+  console.log('Formatted Date:', formattedDate);
+  const query = 'INSERT INTO appointments (doctor_id, doctor_name, appointment_date) VALUES (?, ?, ?)';
+  const values = [doctorId, doctorName, formattedDate];
 
-  db.query('INSERT INTO appointments (date) VALUES (?)', [formattedDate], (error, results) => {
+  db.query(query, values, (error, results) => {
     if (error) {
-      console.error(error);
-      res.status(500).send('Error booking appointment');
+      console.error('Error booking appointment:', error);
+      res.status(500).json({ error: 'Internal Server Error' });
     } else {
-      res.status(200).send('Appointment booked successfully');
+      res.status(200).json({ success: true, message: 'Appointment booked successfully' });
     }
   });
 });

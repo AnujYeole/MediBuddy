@@ -2,34 +2,17 @@
 import React, { useState } from 'react';
 import { View, Button, Text, StyleSheet } from 'react-native';
 import DateTimePickerComponent from './DateTimePicker';
-import axios from 'axios';
 
-const AppBooker = ({ route }) => {
-  const { selectedDateTimestamp } = route.params || {};
-  const [appointmentDate, setAppointmentDate] = useState(
-    selectedDateTimestamp ? new Date(selectedDateTimestamp) : null,
-  );
+const AppBooker = () => {
+  const [appointmentDate, setAppointmentDate] = useState(null);
+  const [bookingStatus, setBookingStatus] = useState(null);
 
-  const handleDateChange = (timestamp) => {
-    setAppointmentDate(timestamp ? new Date(timestamp) : null);
-  };
+  const handleAppointmentBooked = () => {
+    // Handle any additional logic after the appointment is booked
+    // For example, you can update the state or perform other actions
 
-  const bookAppointment = async () => {
-    try {
-      if (appointmentDate) {
-        // Make a request to your server to save the appointment in the database
-        await axios.post('http://192.168.11.10:3000/book-appointment', { date: appointmentDate });
-
-        // Handle success, e.g., show a success message
-        alert('Appointment booked successfully!');
-      } else {
-        // Handle the case where appointmentDate is undefined or falsy
-        alert('Please select a valid date and time before booking.');
-      }
-    } catch (error) {
-      // Handle error, e.g., show an error message
-      alert('Error booking appointment. Please try again.');
-    }
+    // For demonstration purposes, let's update the state and show a success message
+    setBookingStatus('Appointment booked successfully!');
   };
 
   return (
@@ -38,8 +21,9 @@ const AppBooker = ({ route }) => {
       <Text style={styles.selectedDate}>
         Selected Date: {appointmentDate ? appointmentDate.toString() : 'Not selected'}
       </Text>
-      <DateTimePickerComponent onDateTimeSelected={handleDateChange} />
-      <Button title="Book Appointment" onPress={bookAppointment} />
+      <Text style={styles.bookingStatus}>{bookingStatus}</Text>
+      <DateTimePickerComponent onAppointmentBooked={() => handleAppointmentBooked()} />
+      {/* You can add more UI elements or components as needed */}
     </View>
   );
 };
@@ -58,6 +42,11 @@ const styles = StyleSheet.create({
   },
   selectedDate: {
     marginBottom: 16,
+  },
+  bookingStatus: {
+    color: 'green',
+    fontWeight: 'bold',
+    marginTop: 16,
   },
 });
 

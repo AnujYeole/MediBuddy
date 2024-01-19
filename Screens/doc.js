@@ -11,7 +11,7 @@ const ClientPage = ({ navigation }) => {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const response = await axios.get('http://192.168.11.10:3000/doctors');
+        const response = await axios.get('http://192.168.212.10:3000/doctors');
         setDoctorsData(response.data);
       } catch (error) {
         console.error('Error fetching doctors:', error.message);
@@ -24,7 +24,7 @@ const ClientPage = ({ navigation }) => {
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={styles.itemContainer}
-      onPress={() => navigation.navigate('AppointmentBooking', { doctorID: item.id })}
+      onPress={() => navigation.navigate('AppointmentBooking', { doctorID: item.id, doctorName: item.name })}
     >
       <Image source={{ uri: item.profilePicture }} style={styles.avatar} />
       <View style={styles.textContainer}>

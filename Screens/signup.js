@@ -49,7 +49,7 @@ const SignUp = ({ navigation }) => {
     }
 
     try {
-      const response = await axios.post('http://192.168.11.10:3000/signup', {
+      const response = await axios.post('http://192.168.212.10:3000/signup', {
         username,
         email,
         password,

@@ -1,23 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, Text, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Image, Text, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
 
 const AppointmentBooking = ({ route }) => {
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [loading, setLoading] = useState(false);
-  console.log('Route:', route.params);
+  const navigation = useNavigation();
   useEffect(() => {
     const fetchDoctorDetails = async () => {
       try {
         setLoading(true);
-        if (route?.params?.doctorID) {
+        if (route?.params?.doctorID && route?.params?.doctorName) {
           const userId = route.params?.doctorID;
-          console.log(' Doctor Id : ', userId);
+          const userName = route.params?.doctorName;
+          console.log('Doctor Id:', userId);
+          console.log('Doctor Name:', userName);
 
           if (userId) {
-            console.log('Inside if', typeof userId);
-            const response = await axios.get(`http://192.168.11.10:3000/doctors/${userId}`);
-            console.log(typeof userId);
+            const response = await axios.get(`http://192.168.212.10:3000/doctors/${userId}/${userName}`);
             setSelectedDoctor(response.data);
             setLoading(false);
             console.log('Response:', response);
@@ -26,11 +27,17 @@ const AppointmentBooking = ({ route }) => {
       } catch (error) {
         console.error('Error fetching doctor details:', error.message);
         setLoading(false);
+        // Handle error, e.g., show an error message to the user
       }
     };
 
     fetchDoctorDetails();
-  }, [route?.params?.doctorID]);
+  }, [route?.params?.doctorID, route?.params?.doctorName]);
+
+  const handleAppointmentConfirmation = () => {
+    // Navigate to the DateTimePicker component or any other screen
+    navigation.navigate('BookingScreen', { doctor: selectedDoctor });
+  };
 
   if (loading) {
     return (
@@ -56,6 +63,9 @@ const AppointmentBooking = ({ route }) => {
         <Text style={styles.occupation}>{selectedDoctor.occupation}</Text>
         {/* Add more details as needed */}
       </View>
+      <TouchableOpacity style={styles.confirmButton} onPress={handleAppointmentConfirmation}>
+        <Text style={styles.confirmButtonText}>Confirm Appointment</Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -86,6 +96,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  confirmButton: {
+    marginTop: 20,
+    backgroundColor: '#4CAF50',
+    padding: 10,
+    borderRadius: 5,
+  },
+  confirmButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 

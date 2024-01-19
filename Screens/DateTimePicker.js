@@ -1,13 +1,12 @@
 // DateTimePickerComponent.js
 import React, { useState } from 'react';
-import { View, Button, Text, StyleSheet } from 'react-native';
+import { View, TouchableOpacity, Text, StyleSheet, ImageBackground } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import { useNavigation } from '@react-navigation/native';
+import axios from 'axios';
 
-const DateTimePickerComponent = ({ onDateTimeSelected }) => {
+const DateTimePickerComponent = () => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const navigation = useNavigation();
+  const [selectedDate, setSelectedDate] = useState(null);
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -21,22 +20,40 @@ const DateTimePickerComponent = ({ onDateTimeSelected }) => {
     hideDatePicker();
     if (date) {
       setSelectedDate(date);
-      onDateTimeSelected(date.getTime()); // Pass the timestamp instead of the Date object
-      navigation.navigate('AppBooker');
+      // Handle booking logic directly here
+      bookAppointment(date);
+    }
+  };
+
+  const bookAppointment = async (date) => {
+    try {
+      // Make a request to your server to save the appointment in the database
+      await axios.post('http://192.168.88.10:3000/book-appointment', { date });
+
+      // Handle success, e.g., show a success message
+      alert('Appointment booked successfully!');
+    } catch (error) {
+      // Handle error, e.g., show an error message
+      alert('Error booking appointment. Please try again.');
     }
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Choose Date and Time</Text>
-      <Button onPress={showDatePicker} title="Select Date and Time" />
-      <DateTimePickerModal
-        isVisible={isDatePickerVisible}
-        mode="datetime"
-        onConfirm={handleDateConfirm}
-        onCancel={hideDatePicker}
-      />
-    </View>
+    <ImageBackground source={require('../assets/appo3.jpg')} style={styles.backgroundImage}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Choose Date and Time</Text>
+        <TouchableOpacity style={styles.button} onPress={showDatePicker}>
+          <Text style={styles.buttonText}>Select Date and Time</Text>
+        </TouchableOpacity>
+        <DateTimePickerModal
+          isVisible={isDatePickerVisible}
+          mode="datetime"
+          onConfirm={handleDateConfirm}
+          onCancel={hideDatePicker}
+          minimumDate={new Date()} // Set minimumDate to the current date
+        />
+      </View>
+    </ImageBackground>
   );
 };
 
@@ -45,11 +62,30 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.6)', // Semi-transparent white background
+    padding: 20,
   },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 20,
+    color: '#333', // Dark text color
+  },
+  button: {
+    backgroundColor: '#4285F4', // Google Blue
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  backgroundImage: {
+    flex: 1,
+    resizeMode: 'cover',
+    justifyContent: 'center',
   },
 });
 
