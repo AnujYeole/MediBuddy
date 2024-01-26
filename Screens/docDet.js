@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Image, Text, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, Image, Text, StyleSheet, ActivityIndicator, TouchableOpacity, Linking, Alert } from 'react-native';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 
@@ -7,6 +7,7 @@ const AppointmentBooking = ({ route }) => {
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
+
   useEffect(() => {
     const fetchDoctorDetails = async () => {
       try {
@@ -18,7 +19,7 @@ const AppointmentBooking = ({ route }) => {
           console.log('Doctor Name:', userName);
 
           if (userId) {
-            const response = await axios.get(`http://192.168.212.10:3000/doctors/${userId}/${userName}`);
+            const response = await axios.get(`http://192.168.1.100:3000/doctors/${userId}/${userName}`);
             setSelectedDoctor(response.data);
             setLoading(false);
             console.log('Response:', response);
@@ -37,6 +38,15 @@ const AppointmentBooking = ({ route }) => {
   const handleAppointmentConfirmation = () => {
     // Navigate to the DateTimePicker component or any other screen
     navigation.navigate('BookingScreen', { doctor: selectedDoctor });
+  };
+
+  const openWhatsAppChat = () => {
+    if (selectedDoctor && selectedDoctor.whatsappNumber) {
+      const whatsappUrl = `https://wa.me/${selectedDoctor.whatsappNumber}`;
+      Linking.openURL(whatsappUrl);
+    } else {
+      Alert.alert('WhatsApp number not available');
+    }
   };
 
   if (loading) {
@@ -66,13 +76,17 @@ const AppointmentBooking = ({ route }) => {
       <TouchableOpacity style={styles.confirmButton} onPress={handleAppointmentConfirmation}>
         <Text style={styles.confirmButtonText}>Confirm Appointment</Text>
       </TouchableOpacity>
+      <TouchableOpacity style={styles.whatsappButton} onPress={openWhatsAppChat}>
+        <Text style={styles.whatsappButtonText}>Chat on WhatsApp</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    flex: 1,
+    padding: 50,
     alignItems: 'center',
   },
   avatar: {
@@ -104,6 +118,17 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   confirmButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  whatsappButton: {
+    marginTop: 10,
+    backgroundColor: '#25D366',
+    padding: 10,
+    borderRadius: 5,
+  },
+  whatsappButtonText: {
     color: 'white',
     fontWeight: 'bold',
     textAlign: 'center',

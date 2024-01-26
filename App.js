@@ -18,10 +18,10 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Welcome">
         <Stack.Screen name="Welcome" component={Welcome} />
-        <Stack.Screen name="Signup" component={SignUp} />
-        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Signup" component={SignUp} options={{ headerShown: false }} />
+        <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
         <Stack.Screen name="admin" component={AdminPage} />
-        <Stack.Screen name="DocInfo" component={ClientPage} />
+        <Stack.Screen name="Our Team" component={ClientPage} />
         <Stack.Screen name="BookingScreen" component={BookingScreen} />
         <Stack.Screen name="DateTime" component={DateTimePickerComponent} />
         <Stack.Screen name="AppBooker" component={AppBooker} />

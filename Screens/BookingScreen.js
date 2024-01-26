@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, Button } from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity, Alert, ImageBackground } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons';
@@ -11,18 +11,16 @@ const BookingScreen = ({ route }) => {
 
   const handleBooking = async () => {
     try {
-      console.log('Inside Try', doctor.id, doctor.name);
-      //console.log('DocId,Name,date', doctorId, doctorName, selectedDate, route.params);
-      const response = await axios.post('http://192.168.212.10:3000/book-appointment', {
+      const response = await axios.post('http://192.168.1.101:3000/book-appointment', {
         doctorId: doctor.id,
         doctorName: doctor.name,
         date: selectedDate,
       });
-      console.log('Inside Call', response.data);
-      // Handle success, e.g., show a success message to the user
+
+      Alert.alert('Appointment Booked Successfully');
     } catch (error) {
       console.error('Error booking appointment:', error.message);
-      // Handle error, e.g., show an error message to the user
+      Alert.alert('Error', 'Error booking appointment. Please try again.');
     }
   };
 
@@ -42,17 +40,21 @@ const BookingScreen = ({ route }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Ionicons name="calendar" size={32} color="black" onPress={showDatePicker} />
-      <DateTimePickerModal
-        isVisible={isDatePickerVisible}
-        mode="datetime"
-        onConfirm={handleConfirm}
-        onCancel={hideDatePicker}
-        minimumDate={new Date()}
-      />
-      <Button title="Book Appointment" onPress={handleBooking} />
-    </View>
+    <ImageBackground source={require('../assets/appo3.jpg')} style={styles.backgroundImage}>
+      <View style={styles.container}>
+        <Ionicons name="calendar" size={32} color="black" onPress={showDatePicker} />
+        <DateTimePickerModal
+          isVisible={isDatePickerVisible}
+          mode="datetime"
+          onConfirm={handleConfirm}
+          onCancel={hideDatePicker}
+          minimumDate={new Date()}
+        />
+        <TouchableOpacity onPress={handleBooking} style={styles.loginBtn}>
+          <Text style={{ color: 'white' }}>Book Appointment </Text>
+        </TouchableOpacity>
+      </View>
+    </ImageBackground>
   );
 };
 
@@ -61,6 +63,21 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  backgroundImage: {
+    flex: 1,
+    resizeMode: 'cover',
+    justifyContent: 'center',
+  },
+  loginBtn: {
+    width: '70%',
+    backgroundColor: '#DC69FF',
+    borderRadius: 25,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 30,
+    marginBottom: 10,
   },
 });
 
