@@ -45,7 +45,7 @@ const AppointmentBooking = ({ route }) => {
       const whatsappUrl = `https://wa.me/${selectedDoctor.whatsappNumber}`;
       Linking.openURL(whatsappUrl);
     } else {
-      Alert.alert('WhatsApp number not available');
+      Alert.alert('Error', 'Number is not available');
     }
   };
 

@@ -40,7 +40,7 @@ const BookingScreen = ({ route }) => {
   };
 
   return (
-    <ImageBackground source={require('../assets/appo3.jpg')} style={styles.backgroundImage}>
+    <ImageBackground source={require('../assets/smoky.png')} style={styles.backgroundImage}>
       <View style={styles.container}>
         <Ionicons name="calendar" size={32} color="black" onPress={showDatePicker} />
         <DateTimePickerModal

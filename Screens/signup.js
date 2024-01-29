@@ -59,7 +59,7 @@ const SignUp = ({ navigation }) => {
       console.log(response.data);
 
       // After successful signup, navigate to the login page
-      navigation.navigate('DocInfo');
+      navigation.navigate('Our Team');
     } catch (error) {
       console.error('Signup error: ' + error.message);
       // Handle signup error, e.g., show an error message to the user

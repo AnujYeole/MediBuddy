@@ -11,12 +11,10 @@ import {
 } from 'react-native';
 import axios from 'axios';
 import { Ionicons } from '@expo/vector-icons';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer } from '@react-navigation/native';
 
-const Login = ({ navigation }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+const AdminLogin = ({ navigation }) => {
+  const [adminEmail, setAdminEmail] = useState('');
+  const [adminPassword, setAdminPassword] = useState('');
   const [visiblePassword, setVisiblePassword] = useState(false);
   const [validationError, setValidationError] = useState(null);
   const [loading, setLoading] = useState(true); // Set to true initially
@@ -35,9 +33,9 @@ const Login = ({ navigation }) => {
     setVisiblePassword(!visiblePassword);
   };
 
-  const handleLogin = async () => {
+  const handleAdminLogin = async () => {
     // Simple validation
-    if (!email.trim() || !password.trim()) {
+    if (!adminEmail.trim() || !adminPassword.trim()) {
       setValidationError('Please enter both email and password.');
       return;
     }
@@ -45,9 +43,11 @@ const Login = ({ navigation }) => {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://192.168.1.100:3000/login', {
-        email,
-        password,
+      // Make an API request to your backend for admin login
+      // Replace 'http://your-api-url/admin-login' with your actual admin login API endpoint
+      const response = await axios.post('http://192.168.1.100:3000/admlogin', {
+        email: adminEmail,
+        password: adminPassword,
       });
 
       // Check if the response indicates incorrect information
@@ -59,22 +59,15 @@ const Login = ({ navigation }) => {
       // Handle the response, e.g., show a success message
       console.log(response.data);
 
-      // After successful login, navigate to the welcome page
-      navigation.navigate('Our Team', { userEmail: response.data.email });
+      // After successful admin login, navigate to the admin panel or dashboard
+      navigation.navigate('admin', { adminEmail: response.data.email });
     } catch (error) {
-      console.error('Login error: ' + error.message);
-      // Handle other login errors, e.g., network issues
+      console.error('Admin login error: ' + error.message);
+      // Handle other admin login errors, e.g., network issues
       setValidationError('An error occurred. Please try again later.');
     } finally {
       setLoading(false);
     }
-  };
-
-  const onPressSignUp = () => {
-    navigation.navigate('Signup');
-  };
-  const onPressFP = () => {
-    navigation.navigate('fp');
   };
 
   return (
@@ -86,9 +79,9 @@ const Login = ({ navigation }) => {
           <Ionicons name="mail-outline" size={24} color="black" style={styles.icon} />
           <TextInput
             style={styles.input}
-            placeholder="Email"
-            onChangeText={(text) => setEmail(text)}
-            value={email}
+            placeholder="Admin Email"
+            onChangeText={(text) => setAdminEmail(text)}
+            value={adminEmail}
             keyboardType="email-address"
             autoCapitalize="none"
           />
@@ -99,8 +92,8 @@ const Login = ({ navigation }) => {
             style={styles.input}
             placeholder="Password"
             secureTextEntry={!visiblePassword}
-            onChangeText={(text) => setPassword(text)}
-            value={password}
+            onChangeText={(text) => setAdminPassword(text)}
+            value={adminPassword}
           />
           <TouchableOpacity onPress={togglePasswordVisibility} style={styles.eyeIcon}>
             {visiblePassword ? (
@@ -110,17 +103,8 @@ const Login = ({ navigation }) => {
             )}
           </TouchableOpacity>
         </View>
-        <TouchableOpacity>
-          <Text style={styles.forgot} onPress={onPressFP}>
-            Forgot Password?
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={handleLogin} style={styles.loginBtn} disabled={loading}>
+        <TouchableOpacity onPress={handleAdminLogin} style={styles.loginBtn} disabled={loading}>
           {loading ? <ActivityIndicator size="small" color="white" /> : <Text style={{ color: 'white' }}>LOGIN</Text>}
-        </TouchableOpacity>
-        <Text>Don't have an account?</Text>
-        <TouchableOpacity onPress={onPressSignUp}>
-          <Text style={styles.inputText}>Signup here</Text>
         </TouchableOpacity>
       </View>
     </ImageBackground>
@@ -138,11 +122,6 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: 'cover',
     justifyContent: 'center',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
   },
   inputContainer: {
     flexDirection: 'row',
@@ -165,10 +144,6 @@ const styles = StyleSheet.create({
   eyeIcon: {
     padding: 10,
   },
-  forgotAndSignUpText: {
-    color: 'white',
-    fontSize: 11,
-  },
   loginBtn: {
     width: '70%',
     backgroundColor: '#DC69FF',
@@ -179,14 +154,10 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginBottom: 10,
   },
-  inputText: {
-    height: 50,
-    color: 'blue',
-  },
   logo: {
     width: 150,
     height: 200,
   },
 });
 
-export default Login;
+export default AdminLogin;
